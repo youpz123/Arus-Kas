@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arus Kas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" ></script>
+  <style>
+ body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #fff;
+}
+
+h2 {
+  color: #0071bc;
+  margin: 0;
+  text-align: center;
+}
+
+.surplus-box {
+  background: black;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.buttons {
+  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttons button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.reset-btn {
+  background: #f44336;
+  color: white;
+}
+
+.print-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.save-btn {
+  background: #2196f3;
+  color: white;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.column {
+  padding: 15px;
+  box-shadow: 0 0 10px #eee;
+  border: 2px solid #ccc;
+}
+
+h3 {
+  background: #0071bc;
+  color: white;
+  padding: 10px;
+  margin-top: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+th {
+  background: #ffcc00;
+}
+
+input[type="text"] {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: right;
+  font-family: inherit;
+}
+
+input[readonly] {
+  color: #333;
+  background: #f5f5f5;
+  font-weight: bold;
+}
+
+.total-row {
+  background: #e0e0e0;
+  font-weight: bold;
+}
+
+canvas#chartCanvas {
+  width: 100% !important;
+  max-height: 100px;
+  margin-top: 10px;
+}
+
+/* >>> Tampilan untuk layar besar <<< */
+@media (min-width: 768px) {
+  .buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .buttons button {
+    width: auto;
+  }
+
+  .container {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .column {
+    flex: 1 1 300px;
+  }
+}
+
+    
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>ARUS KAS</h2>
+  </div>
+
+  <div class="buttons">
+    <button class="reset-btn" onclick="resetForm()"><i class="fas fa-rotate-left"></i> Reset</button>
+    <button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button>
+	<button class="save-btn" onclick="eksporGambar()"><i class="fas fa-image"></i> Ekspor Gambar</button>
+  </div>
+
+  <div class="container">
+    <!-- KAS MASUK -->
+    <div class="column">
+      <h3>KAS MASUK</h3>
+      <table>
+        <tr><td><input type="text" placeholder="sumber pendapatan 1" /></td><td><input type="text" class="income" placeholder="Rp.0"  /></td></tr>
+        <tr><td><input type="text" placeholder="sumber pendapatan 2" /></td><td><input type="text" class="income" placeholder="Rp.0" /></td></tr>
+        <tr><td><input type="text" placeholder="sumber pendapatan 3" /></td><td><input type="text" class="income" placeholder="Rp.0" /></td></tr>
+        <tr><td><input type="text" placeholder="sumber pendapatan 4" /></td><td><input type="text" class="income" placeholder="Rp.0" /></td></tr>
+        <tr><td><input type="text" placeholder="sumber pendapatan 5" /></td><td><input type="text" class="income" placeholder="Rp.0" /></td></tr>
+        <tr class="total-row"><td>TOTAL KAS MASUK</td><td id="totalIncome">Rp 0</td></tr>
+      </table>
+	   <div class="surplus-box" id="surplusBox">Surplus/Defisit: Rp 0</div>
+      <canvas id="chartCanvas" height="80"></canvas>
+    </div>
+
+    <!-- KAS KELUAR -->
+    <!-- KAS KELUAR -->
+    <div class="column">
+      <h3>KAS KELUAR</h3>
+      <table>
+        <tr><th>Kewajiban (cicilan)</th><td><input type="text" id="kewajiban" readonly /></td></tr>
+        <tr><th>Jangka Panjang</th><td><input type="text" class="expense" id="jangkaPanjang" /></td></tr>
+        <tr><th>Jangka Pendek</th><td><input type="text" class="expense" id="jangkaPendek" /></td></tr>
+      </table>
+
+      <table>
+        <tr><th> Investasi/Tabungan </th><td><input type="text" id="totalInvestasi" readonly /></td></tr>
+        <tr><th>Dana Darurat</th><td><input type="text" class="expense" id="danaDarurat" /></td></tr>
+        <tr><th>Tabungan kas</th><td><input type="text" class="expense" id="tabunganKas" /></td></tr>
+      </table>
+
+      <table>
+        <tr><th> Biaya Hidup </th><td><input type="text" id="biayaHidupTotal" readonly class="expense" /></td></tr>
+        <tr><th>Konsumsi / Makan</th><td><input type="text" class="expense" /></td></tr>
+        <tr><th>Tempat tinggal</th><td><input type="text" class="expense" /></td></tr>
+        <tr><th>Ortu</th><td><input type="text" class="expense" /></td></tr>
+        <tr><th>Internet</th><td><input type="text" class="expense" /></td></tr>
+        <tr><th>Air, listrik</th><td><input type="text" class="expense" /></td></tr>
+        <tr><th>Jajan</th><td><input type="text" class="expense" /></td></tr>
+        <tr><th>Iuran</th><td><input type="text" class="expense" /></td></tr>
+        <tr class="total-row"><td>TOTAL KAS KELUAR</td><td id="totalExpense">Rp 0</td></tr>
+      </table>
+    </div>
+  </div>
+  
+  <script>
+    const incomeInputs = document.querySelectorAll('.income');
+    const expenseInputs = document.querySelectorAll('.expense');
+    const totalIncomeEl = document.getElementById('totalIncome');
+    const totalExpenseEl = document.getElementById('totalExpense');
+    const surplusBox = document.getElementById('surplusBox');
+
+    const kewajibanInput = document.getElementById('kewajiban');
+    const jangkaPanjangInput = document.getElementById('jangkaPanjang');
+    const jangkaPendekInput = document.getElementById('jangkaPendek');
+    const danaDaruratInput = document.getElementById('danaDarurat');
+    const tabunganKasInput = document.getElementById('tabunganKas');
+    const totalInvestasiInput = document.getElementById('totalInvestasi');
+    const biayaHidupInput = document.getElementById('biayaHidupTotal');
+
+    function parseRupiah(value) {
+      return Number(value.replace(/[^0-9]/g, "")) || 0;
+    }
+
+    function formatRupiah(number) {
+      return "Rp " + number.toLocaleString("id-ID");
+    }
+
+    function handleInputFormat(e) {
+      const input = e.target;
+      const value = parseRupiah(input.value);
+      input.value = value ? formatRupiah(value) : "";
+      calculateTotals();
+    }
+
+    function updateKewajiban() {
+      const total = parseRupiah(jangkaPanjangInput.value) + parseRupiah(jangkaPendekInput.value);
+      kewajibanInput.value = formatRupiah(total);
+    }
+
+    function updateInvestasi() {
+      const total = parseRupiah(danaDaruratInput.value) + parseRupiah(tabunganKasInput.value);
+      totalInvestasiInput.value = formatRupiah(total);
+    }
+
+    function updateBiayaHidup() {
+      let total = 0;
+      let start = false;
+      expenseInputs.forEach(input => {
+        if (input.id === 'biayaHidupTotal') start = true;
+        else if (start) total += parseRupiah(input.value);
+      });
+      biayaHidupInput.value = formatRupiah(total);
+    }
+
+    function calculateTotals() {
+      updateKewajiban();
+      updateInvestasi();
+      updateBiayaHidup();
+
+      const totalIncome = [...incomeInputs].reduce((sum, input) => sum + parseRupiah(input.value), 0);
+      const totalExpense = parseRupiah(kewajibanInput.value) + parseRupiah(totalInvestasiInput.value) + parseRupiah(biayaHidupInput.value);
+      const surplus = totalIncome - totalExpense;
+
+      totalIncomeEl.textContent = formatRupiah(totalIncome);
+      totalExpenseEl.textContent = formatRupiah(totalExpense);
+      surplusBox.textContent = `Surplus/Defisit: ${formatRupiah(surplus)}`;
+      surplusBox.style.backgroundColor = surplus > 0 ? 'green' : surplus < 0 ? 'red' : 'black';
+    }
+
+    function resetForm() { if (confirm("Yakin ingin mereset semua data?")) {
+      [...incomeInputs, ...expenseInputs, jangkaPanjangInput, jangkaPendekInput, danaDaruratInput, tabunganKasInput].forEach(input => input.value = "");
+      calculateTotals();
+    }
+	}
+
+    [...incomeInputs, ...expenseInputs, jangkaPanjangInput, jangkaPendekInput, danaDaruratInput, tabunganKasInput].forEach(input => {
+      input.addEventListener("input", handleInputFormat);
+      input.addEventListener("blur", handleInputFormat);
+    });
+
+    const chartCanvas = document.getElementById("chartCanvas").getContext("2d");
+    let chart;
+
+    function updateChart(data) {
+  const labels = data.map(d => d.tanggal);
+  const values = data.map(d => d.jumlah);
+
+  if (chart) chart.destroy();
+  chart = new Chart(chartCanvas, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Investasi/Tabungan',
+        data: values,
+        borderColor: '#0071bc',
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }},
+      scales: { y: { beginAtZero: true }}
+    }
+  });
+}
+
+// Contoh pemanggilan:
+updateChart([
+  { tanggal: "2025-05-01", jumlah: 300000 },
+  { tanggal: "2025-05-02", jumlah: 350000 },
+  { tanggal: "2025-05-03", jumlah: 250000 }
+]);
+
+	
+	function simpanRiwayat() {
+  const data = {
+    tanggal: new Date().toISOString(),
+    kasMasuk: [...incomeInputs].map(i => parseRupiah(i.value)),
+    kasKeluar: [...expenseInputs].map(i => parseRupiah(i.value)),
+    kewajiban: parseRupiah(kewajibanInput.value),
+    investasi: parseRupiah(totalInvestasiInput.value),
+    biayaHidup: parseRupiah(biayaHidupInput.value),
+    totalMasuk: parseRupiah(totalIncomeEl.textContent),
+    totalKeluar: parseRupiah(totalExpenseEl.textContent),
+    surplus: parseRupiah(surplusBox.textContent)
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `arus_kas_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  
+
+
+}
+document.querySelectorAll("input").forEach(input => {
+  input.addEventListener("keypress", function(e) {
+    if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
+      e.preventDefault();
+    }
+  });
+});
+
+function eksporGambar() {
+      html2canvas(document.querySelector(".container"), { scale: 2 }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `arus_kas_${new Date().toISOString().slice(0,10)}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+  });
+}
+
+   
+    
+
+    calculateTotals();
+  </script>
+
+</body>
+</html>
