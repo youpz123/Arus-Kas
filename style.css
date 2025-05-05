@@ -1,0 +1,220 @@
+/* Font dan Warna Dasar */
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #f5f7fa;
+  color: #2d3436;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Header */
+.header h2 {
+  color: #2e86de;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-size: 28px;
+}
+
+/* Tombol */
+.buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+/* Tombol hover */
+.buttons button {
+  padding: 10px 18px;
+  font-size: 15px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #6c63ff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+.buttons button:hover {
+  transform: translateY(-3px); /* Angkat sedikit saat hover */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Tombol reset */
+.reset-btn {
+  background: #ff6b6b;
+  transition: transform 0.2s ease-in-out;
+}
+
+.reset-btn:hover {
+  background: #e85a5a;
+  transform: scale(1.1); /* Efek memperbesar saat hover */
+}
+
+/* Tombol save */
+.save-btn {
+  background: #48c9b0;
+  transition: transform 0.2s ease-in-out;
+}
+
+.save-btn:hover {
+  background: #38b29c;
+  transform: scale(1.1); /* Efek memperbesar saat hover */
+}
+
+/* Container dan Kolom */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.column {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease; box-shadow 0.3s ease; /* Tambahkan transisi pada shadow */
+}
+
+.column:hover {
+  transform: translateY(-6px); /* Mengangkat sedikit saat hover */
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12); /* Bayangan lebih besar saat hover */
+}
+
+h3 {
+  background: #2e86de;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Tabel */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+th {
+  background: #ecf0f1;
+  color: #2d3436;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  background: #fdfefe;
+  text-align: right;
+  font-size: 13px;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #2e86de;
+}
+
+input[readonly] {
+  background: #f4f6f7;
+  font-weight: bold;
+}
+
+.total-row {
+  background: #d6eaf8;
+  font-weight: bold;
+}
+
+.surplus-box {
+  margin-top: 20px;
+  background: #48c774; /* Warna default untuk surplus */
+  color: white;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: background 0.5s ease; /* Efek transisi pada background */
+}
+
+.surplus-box.defisit {
+  background: #ff6b6b; /* Warna untuk defisit */
+}
+
+#percentKewajiban.red {
+  color: red;
+  font-weight: bold;
+}
+
+/* Responsif */
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  /* Efek fade in pada kolom */
+.column {
+  opacity: 0;
+  animation: fadeIn 1s forwards; /* Efek animasi fade in */
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+  .buttons {
+    justify-content: flex-start;
+  }
+  
+/* Input dengan animasi */
+input[type="text"] {
+  width: 100%;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  background: #f9f9fb;
+  text-align: right;
+  font-size: 12px;
+  transition: background 0.3s, transform 0.3s; /* Efek transisi */
+}
+
+input[type="text"]:focus {
+  background: #ffffff;
+  transform: scale(1.05); /* Membesar sedikit saat fokus */
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+canvas {
+  animation: fadeIn 1.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
